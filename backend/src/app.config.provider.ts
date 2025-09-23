@@ -3,8 +3,12 @@ import {ConfigModule} from "@nestjs/config";
 export const configProvider = {
     imports: [ConfigModule.forRoot()],
     provide: 'CONFIG',
-    useValue: < AppConfig> {
-        //TODO прочесть переменнные среды
+    useValue: <AppConfig> {
+        //переменнные среды
+        database: {
+          driver: process.env.DATABASE_DRIVER,
+          url: process.env.DATABASE_URL
+        }
     },
 }
 
