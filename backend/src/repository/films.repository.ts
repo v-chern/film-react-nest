@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import mongoose, {Schema, Mongoose} from 'mongoose';
 
+export interface IHallPlace {
+  row: number;
+  seat: number;
+}
+
 export interface IFilmSchedule {
   id: string;
   daytime: string;
@@ -23,6 +28,11 @@ export interface IFilm {
   description: string;
   schedule: IFilmSchedule[];
 }
+
+const FilmSchema = new mongoose.Schema({
+
+});
+
 
 //TODO: подключение к mongo для фильмов
 @Injectable()
@@ -75,6 +85,14 @@ export class FilmsRepository {
     }]
   }];
 
+  private getFilmSchedule(filmId: string, scheduleId: string): IFilmSchedule {
+    const film = this.films.find(f => f.id === filmId);
+    if (!film) throw new Error(`Film ${filmId} not found`);
+    const schedule = film.schedule.find(s => s.id === scheduleId);
+    if (!schedule) throw new Error(`Schedule ${scheduleId} not found for film ${filmId}`);
+    return schedule;
+  }
+
   findAll() {
     return this.films;
   }
@@ -82,4 +100,27 @@ export class FilmsRepository {
   findById(id: string) {
     return this.films.find(film => film.id === id);
   }
+
+  reservePlaceById(filmId: string, scheduleId: string, place: IHallPlace): string {
+    const placeStr = `${place.row}:${place.seat}`;
+    const schedule = this.getFilmSchedule(filmId, scheduleId);
+    
+    if (place.row > schedule.rows) {
+      throw new Error(`Row ${place.row} exceeds total rows.`);
+    }
+
+    if (place.seat > schedule.seats) {
+      throw new Error(`Seat ${place.seat} exceeds total seats.`);
+    }
+
+    if (schedule.taken.includes(placeStr)) {
+      throw new Error(`Place row ${place.row} seat ${place.seat} is already taken.`);
+    }
+
+    schedule.taken.push(placeStr);
+    
+    return placeStr;
+  }
 }
+
+

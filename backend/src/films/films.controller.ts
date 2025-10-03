@@ -8,11 +8,21 @@ export class FilmsController {
 
   @Get()
   getAllFilms() {
-    return this.filmsService.findAll();
+    const films = this.filmsService.findAll();
+    const retVal = {
+      total: films.length, 
+      items: films.map(({ schedule, ...rest }) => rest)
+    }
+    return retVal;
   }
 
   @Get(':id/schedule')
   getFilmSchedule(@Param('id') id: string) {
-    return this.filmsService.findScheduleById(id);
+    const schedule = this.filmsService.findScheduleById(id);
+    const retVal = {
+      total: schedule.length, 
+      items: schedule
+    }
+    return retVal;
   }
 }

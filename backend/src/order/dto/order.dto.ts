@@ -1,9 +1,19 @@
 //TODO реализовать DTO для /orders
-import { IsString, IsNumber } from "class-validator";
+import { IsString, IsNumber, IsEmail } from "class-validator";
+
+export interface ITicket {
+  film:string
+  session: string;
+  daytime: string;
+  row: number;
+  seat: number;
+  price: number;
+}
 
 export class CreateOrderDTO {
+  @IsEmail()
+  email: string;
   @IsString()
-  name: string;
-  @IsNumber()
-  count: number;
+  phone: string;
+  tickets: ITicket[];
 }
