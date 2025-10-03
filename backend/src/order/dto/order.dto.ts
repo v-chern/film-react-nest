@@ -1,8 +1,7 @@
-//TODO реализовать DTO для /orders
-import { IsString, IsNumber, IsEmail } from "class-validator";
+import { IsString, IsEmail } from 'class-validator';
 
 export interface ITicket {
-  film:string
+  film: string;
   session: string;
   daytime: string;
   row: number;

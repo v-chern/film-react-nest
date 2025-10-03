@@ -6,8 +6,7 @@ export class FilmsService {
   constructor(private readonly filmsRepository: FilmsRepository) {}
 
   findScheduleById(id: string) {
-    const film = { ...this.filmsRepository.findById(id) };
-    return film.schedule;
+    return this.filmsRepository.findFilmSchedule(id);
   }
 
   findAll() {

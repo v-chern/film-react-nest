@@ -1,10 +1,15 @@
-import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { CreateOrderDTO } from './dto/order.dto';
 import { OrderService } from './order.service';
 
 @Controller('order')
 export class OrderController {
-
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
@@ -16,11 +21,10 @@ export class OrderController {
     } catch (error) {
       throw new HttpException(
         {
-          error: error.message
-          
+          error: error.message,
         },
-        HttpStatus.BAD_REQUEST
-      )
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return retVal;
   }
