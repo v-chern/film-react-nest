@@ -1,10 +1,5 @@
 import { Schema } from 'mongoose';
 
-export interface IHallPlace {
-  row: number;
-  seat: number;
-}
-
 export interface IFilmSchedule {
   id: string;
   daytime: string;

@@ -1,4 +1,4 @@
-import { IsString, IsEmail } from 'class-validator';
+import { IsString, IsEmail, IsArray } from 'class-validator';
 
 export interface ITicket {
   film: string;
@@ -14,5 +14,6 @@ export class CreateOrderDTO {
   email: string;
   @IsString()
   phone: string;
+  @IsArray()
   tickets: ITicket[];
 }

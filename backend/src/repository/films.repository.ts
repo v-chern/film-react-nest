@@ -1,23 +1,17 @@
-import { Injectable, Inject } from '@nestjs/common';
-import mongoose, { Model } from 'mongoose';
-import { IFilm, IHallPlace, FilmSchema } from './schema/films.schema';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IFilm } from './schema/films.schema';
 import {
   GetFilmDTO,
   GetFilmsDTO,
   GetSessionDTO,
   GetSessionsDTO,
 } from '../films/dto/films.dto';
-import { AppConfig } from '../app.config.provider';
 
 @Injectable()
 export class FilmsRepository {
-  private filmModel: Model<IFilm>;
-
-  constructor(@Inject('CONFIG') private readonly config: AppConfig) {
-    const connection = mongoose.createConnection(this.config.database.url);
-    this.filmModel = connection.model<IFilm>('Film', FilmSchema);
-  }
-
+  constructor(@InjectModel('Film') private readonly filmModel: Model<IFilm>) {}
   private getFilmsMapperFn(): (FilmModel) => GetFilmDTO {
     return (root) => {
       return {
@@ -59,49 +53,28 @@ export class FilmsRepository {
 
   async findFilmSchedule(filmId: string): Promise<GetSessionsDTO> {
     const film = await this.filmModel.findOne({ id: filmId });
-    if (!film) {
-      throw new Error(`Film ${filmId} not found`);
-    }
-    return {
-      total: film.schedule.length,
-      items: film.schedule.map(this.getFilmSessionsMapperFn()),
+    let retVal = {
+      total: 0,
+      items: [],
     };
+    if (film) {
+      retVal = {
+        total: film.schedule.length,
+        items: film.schedule.map(this.getFilmSessionsMapperFn()),
+      };
+    }
+    return retVal;
   }
 
   async reservePlace(
     filmId: string,
     scheduleId: string,
-    place: IHallPlace,
+    place: string,
   ): Promise<string> {
-    const placeStr = `${place.row}:${place.seat}`;
-
     const film = await this.filmModel.findOne({ id: filmId });
-    if (!film) {
-      throw new Error(`Film ${filmId} not found`);
-    }
-
     const session = film.schedule.find((s) => s.id === scheduleId);
-    if (!session) {
-      throw new Error(`Session ${scheduleId} not found for film ${filmId}`);
-    }
-
-    if (place.row > session.rows) {
-      throw new Error(`Row ${place.row} exceeds total rows.`);
-    }
-
-    if (place.seat > session.seats) {
-      throw new Error(`Seat ${place.seat} exceeds total seats.`);
-    }
-
-    if (session.taken.includes(placeStr)) {
-      throw new Error(
-        `Place row ${place.row} seat ${place.seat} is already taken for session ${scheduleId} film ${filmId}.`,
-      );
-    }
-
-    session.taken.push(placeStr);
+    session.taken.push(place);
     await film.save();
-
-    return placeStr;
+    return place;
   }
 }
