@@ -32,7 +32,9 @@ import { ScheduleEntity } from './repository/postgres-films/entities/schedule.en
       : [
           TypeOrmModule.forRoot({
             type: configProvider.useValue.database.driver as any,
-            url: configProvider.useValue.database.url,
+            host: configProvider.useValue.database.host,
+            port: configProvider.useValue.database.port,
+            database: configProvider.useValue.database.name,
             schema: configProvider.useValue.database.schema,
             username: configProvider.useValue.database.user,
             password: configProvider.useValue.database.password,
