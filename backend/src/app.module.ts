@@ -34,6 +34,8 @@ import { ScheduleEntity } from './repository/postgres-films/entities/schedule.en
             type: configProvider.useValue.database.driver as any,
             url: configProvider.useValue.database.url,
             schema: configProvider.useValue.database.schema,
+            username: configProvider.useValue.database.user,
+            password: configProvider.useValue.database.password,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
             synchronize: true,
           }),
