@@ -1,15 +1,19 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { FilmsRepository } from '../repository/films.repository';
+import { IFilmsRepository } from '../repository/films.repository';
 import { CreateOrderDTO } from './dto/order.dto';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly filmsRepository: FilmsRepository) {}
+  constructor(
+    @Inject('IFilmsRepository')
+    private readonly filmsRepository: IFilmsRepository,
+  ) {}
 
   async createOrder(orderData: CreateOrderDTO) {
     const retVal = {
@@ -22,7 +26,6 @@ export class OrderService {
       const place = `${ticket.row}:${ticket.seat}`;
 
       const schedule = await this.filmsRepository.findFilmSchedule(filmId);
-      console.log('SCHEDULE', schedule);
       if (schedule.total === 0) {
         throw new NotFoundException({
           error: `No sessions found for film ${filmId}`,
