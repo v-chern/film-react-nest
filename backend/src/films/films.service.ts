@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { FilmsRepository } from '../repository/films.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { IFilmsRepository } from '../repository/films.repository';
 
 @Injectable()
 export class FilmsService {
-  constructor(private readonly filmsRepository: FilmsRepository) {}
+  constructor(
+    @Inject('IFilmsRepository')
+    private readonly filmsRepository: IFilmsRepository,
+  ) {}
 
   async findScheduleById(id: string) {
     const sessions = await this.filmsRepository.findFilmSchedule(id);

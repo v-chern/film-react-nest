@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FilmsRepository } from './films.repository';
+import { IFilmsRepository } from '../films.repository';
+import { MongoFilmsRepository } from './mongo-films.repository';
 
 describe('FilmsRepository', () => {
-  let provider: FilmsRepository;
+  let provider: IFilmsRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FilmsRepository],
+      providers: [MongoFilmsRepository],
     }).compile();
 
-    provider = module.get<FilmsRepository>(FilmsRepository);
+    provider = module.get<IFilmsRepository>(MongoFilmsRepository);
   });
 
   it('should be defined', () => {
