@@ -13,7 +13,7 @@ export const configProvider = {
       name: process.env.DATABASE_NAME,
       schema: process.env.DATABASE_SCHEMA,
       user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD
+      password: process.env.DATABASE_PASSWORD,
     },
   },
 };

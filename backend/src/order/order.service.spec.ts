@@ -19,8 +19,8 @@ const testOrderData = {
       seat: 8,
       price: 12.5,
     },
-  ]
-}
+  ],
+};
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -28,13 +28,16 @@ describe('OrderService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OrderService, {
-        provide: 'IFilmsRepository',
-        useValue: {
-          findFilmSchedule: jest.fn(),
-          reservePlace: jest.fn()
-        }
-      }],
+      providers: [
+        OrderService,
+        {
+          provide: 'IFilmsRepository',
+          useValue: {
+            findFilmSchedule: jest.fn(),
+            reservePlace: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<OrderService>(OrderService);
@@ -46,7 +49,10 @@ describe('OrderService', () => {
   });
 
   it('should throw NotFoundException if no sessions found for film', async () => {
-    (filmsRepository.findFilmSchedule as jest.Mock).mockResolvedValueOnce({ total: 0, items: [] });
+    (filmsRepository.findFilmSchedule as jest.Mock).mockResolvedValueOnce({
+      total: 0,
+      items: [],
+    });
 
     await expect(service.createOrder(testOrderData)).rejects.toThrow(
       NotFoundException,
@@ -91,11 +97,11 @@ describe('OrderService', () => {
     });
 
     await expect(service.createOrder(testOrderData)).rejects.toThrow(
-      BadRequestException
+      BadRequestException,
     );
   });
 
-    it('should throw BadRequestException if seat exceeds total seats', async () => {
+  it('should throw BadRequestException if seat exceeds total seats', async () => {
     (filmsRepository.findFilmSchedule as jest.Mock).mockResolvedValueOnce({
       total: 1,
       items: [
@@ -112,7 +118,7 @@ describe('OrderService', () => {
     });
 
     await expect(service.createOrder(testOrderData)).rejects.toThrow(
-      BadRequestException
+      BadRequestException,
     );
   });
 
@@ -133,7 +139,7 @@ describe('OrderService', () => {
     });
 
     await expect(service.createOrder(testOrderData)).rejects.toThrow(
-      ConflictException
+      ConflictException,
     );
   });
 
@@ -158,7 +164,7 @@ describe('OrderService', () => {
     expect(filmsRepository.reservePlace).toHaveBeenCalledWith(
       'film-id-123',
       'session-id-456',
-      '5:8'
+      '5:8',
     );
 
     expect(result).toEqual({

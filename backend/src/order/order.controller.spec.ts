@@ -10,13 +10,13 @@ describe('OrderController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OrderController],
-      providers: [OrderService]
+      providers: [OrderService],
     })
-    .overrideProvider(OrderService)
-    .useValue({
-      createOrder: jest.fn(),
-    })
-    .compile();
+      .overrideProvider(OrderService)
+      .useValue({
+        createOrder: jest.fn(),
+      })
+      .compile();
 
     controller = module.get<OrderController>(OrderController);
     orderService = module.get<OrderService>(OrderService);
@@ -27,10 +27,10 @@ describe('OrderController', () => {
   });
 
   it('should call createOrder from OrderService', async () => {
-    const orderData = { 
+    const orderData = {
       email: 'test@test.ts',
       phone: '1234567890',
-      tickets: []
+      tickets: [],
     };
     await controller.createOrder(orderData);
     expect(orderService.createOrder).toHaveBeenCalledWith(orderData);

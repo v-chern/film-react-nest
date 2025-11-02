@@ -6,7 +6,7 @@ import { TskvLogger } from './logger/tskv.logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true
+    bufferLogs: true,
   });
   app.setGlobalPrefix('api/afisha');
   app.enableCors();

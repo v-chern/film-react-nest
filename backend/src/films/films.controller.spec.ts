@@ -11,12 +11,12 @@ describe('FilmsController', () => {
       controllers: [FilmsController],
       providers: [FilmsService],
     })
-    .overrideProvider(FilmsService)
-    .useValue({
-      findAll: jest.fn(),
-      findScheduleById: jest.fn(),
-    })
-    .compile();
+      .overrideProvider(FilmsService)
+      .useValue({
+        findAll: jest.fn(),
+        findScheduleById: jest.fn(),
+      })
+      .compile();
 
     controller = module.get<FilmsController>(FilmsController);
     filmsService = module.get<FilmsService>(FilmsService);

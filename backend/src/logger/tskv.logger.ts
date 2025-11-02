@@ -1,4 +1,4 @@
-import { Injectable, LoggerService } from "@nestjs/common";
+import { Injectable, LoggerService } from '@nestjs/common';
 
 @Injectable()
 export class TskvLogger implements LoggerService {
@@ -7,7 +7,7 @@ export class TskvLogger implements LoggerService {
     if (optionalParams.length !== 0) {
       msg += `\tparams=${JSON.stringify(optionalParams)}`;
     }
-    return msg; 
+    return msg;
   }
   log(message: any, ...optionalParams: any[]) {
     console.log(this.formatMessage('INFO', message, ...optionalParams));
