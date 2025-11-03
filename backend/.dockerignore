@@ -1,0 +1,14 @@
+# Deps
+node_modules/
+dist/
+coverage/
+git
+.gitignore
+*.log
+
+# Docker
+Dockerfile
+
+# README и файлы лицензий
+README.md
+LICENSE

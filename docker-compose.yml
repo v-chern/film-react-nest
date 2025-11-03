@@ -1,0 +1,59 @@
+version: "3.9"
+services:
+  postgres:
+    image: "postgres:16"
+    env_file:
+      - backend/.env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - db:/var/lib/postgresql/data
+    networks:
+      - internal
+  backend:
+    build:
+      context: backend
+    env_file:
+      - backend/.env
+    image: 'chernvl/film-be:node24-alpine'
+    ports:
+      - "3000:3000"
+    volumes:
+      - public:/app/src/public
+    networks:
+      - internal
+    depends_on:
+      - postgres
+  frontend:
+    build:
+      context: frontend
+    image: 'chernvl/film-fe:node24-alpine'
+    env_file:
+      - frontend/.env
+    volumes:
+      - frontend:/app/frontend/dist
+  server:
+    build:
+      context: nginx
+    ports:
+      - 80:80
+    volumes:
+      - frontend:/var/app
+      - public:/var/public
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - internal
+
+
+volumes:
+  frontend:
+  public:
+  db:
+
+networks:
+  internal:
