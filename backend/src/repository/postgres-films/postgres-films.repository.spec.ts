@@ -5,7 +5,6 @@ import { PostgresFilmsRepository } from './postgres-films.repository';
 import { Repository } from 'typeorm';
 import { FilmEntity } from './entities/film.entity';
 import { ScheduleEntity } from './entities/schedule.entity';
-import exp from 'constants';
 
 const testFilms = {
   total: 1,
