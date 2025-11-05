@@ -2,6 +2,8 @@ version: "3.9"
 services:
   postgres:
     image: "postgres:16"
+    container_name: film_db
+    restart: always
     env_file:
       - backend/.env
     environment:
@@ -13,12 +15,29 @@ services:
       - db:/var/lib/postgresql/data
     networks:
       - internal
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - internal
+    depends_on:
+      - postgres
   backend:
     build:
       context: backend
     env_file:
       - backend/.env
-    image: 'chernvl/film-be:node24-alpine'
+    image: 'ghcr.io/v-chern/film-be:node24-alpine'
+    container_name: film_be
+    restart: always
     ports:
       - "3000:3000"
     volumes:
@@ -30,7 +49,8 @@ services:
   frontend:
     build:
       context: frontend
-    image: 'chernvl/film-fe:node24-alpine'
+    image: 'ghcr.io/v-chern/film-fe:node24-alpine'
+    container_name: film_fe
     env_file:
       - frontend/.env
     volumes:
@@ -38,6 +58,8 @@ services:
   server:
     build:
       context: nginx
+    container_name: film_server
+    restart: always
     ports:
       - 80:80
     volumes:
@@ -54,6 +76,7 @@ volumes:
   frontend:
   public:
   db:
+  pgadmin-data:
 
 networks:
   internal:
