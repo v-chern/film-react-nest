@@ -72,7 +72,6 @@ services:
     networks:
       - internal
 
-
 volumes:
   frontend:
   public:
