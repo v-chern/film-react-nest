@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./backend/test/postgres.init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - db:/var/lib/postgresql/data
     networks:
       - internal
