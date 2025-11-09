@@ -70,11 +70,14 @@ export class MongoFilmsRepository implements IFilmsRepository {
 
   async reservePlace(
     filmId: string,
-    scheduleId: string,
+    sessionId: string,
     place: string,
   ): Promise<string> {
     const film = await this.filmModel.findOne({ id: filmId });
-    const session = film.schedule.find((s) => s.id === scheduleId);
+    if (!film) {
+      throw new Error(`Session ${sessionId} for film ${filmId} not found`);
+    }
+    const session = film.schedule.find((s) => s.id === sessionId);
     session.taken.push(place);
     await film.save();
     return place;

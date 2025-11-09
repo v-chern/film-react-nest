@@ -52,10 +52,6 @@ export class PostgresFilmsRepository implements IFilmsRepository {
 
   async findAll(): Promise<GetFilmsDTO> {
     const films = await this.filmRepository.find();
-    const userInfo = await this.filmRepository.query(
-      'select current_user, session_user, inet_client_addr() as client_ip;',
-    );
-    console.log('📡 DB connection info:', userInfo[0]);
     const total = await this.filmRepository.count();
     return {
       total,

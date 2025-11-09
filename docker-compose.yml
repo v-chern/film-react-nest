@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+  postgres:
+    image: "postgres:16"
+    container_name: film_db
+    restart: always
+    env_file:
+      - backend/.env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./backend/test/postgres.init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - db:/var/lib/postgresql/data
+    networks:
+      - internal
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - internal
+    depends_on:
+      - postgres
+  backend:
+    build:
+      context: backend
+    env_file:
+      - backend/.env
+    image: 'ghcr.io/v-chern/film-backend'
+    container_name: film_be
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - public:/app/src/public
+    networks:
+      - internal
+    depends_on:
+      - postgres
+  frontend:
+    build:
+      context: frontend
+    image: 'ghcr.io/v-chern/film-frontend'
+    container_name: film_fe
+    env_file:
+      - frontend/.env
+    volumes:
+      - frontend:/app/frontend/dist
+  server:
+    build:
+      context: nginx
+    image: 'ghcr.io/v-chern/film-server'
+    container_name: film_server
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - frontend:/var/app
+      - public:/var/public
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - internal
+
+volumes:
+  frontend:
+  public:
+  db:
+  pgadmin-data:
+
+networks:
+  internal:

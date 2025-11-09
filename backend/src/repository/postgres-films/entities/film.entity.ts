@@ -30,6 +30,11 @@ export class FilmEntity {
   @Column({ type: 'text' })
   description: string;
 
-  @OneToMany(() => ScheduleEntity, (schedule) => schedule.film)
+  @OneToMany(() => ScheduleEntity, (schedule) => schedule.film, {
+    //eager: true //load schedules together with film
+    cascade: true, // schedules will be inserted/updated along with film
+    onDelete: 'CASCADE', //delete schedules when film is deleted
+    onUpdate: 'CASCADE', //update schedules when film is updated
+  })
   schedules: ScheduleEntity[];
 }
